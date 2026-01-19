@@ -1,0 +1,9 @@
+﻿{
+  "name": "diablo-ocr",
+  "version": "0.1.0",
+  "description": "Diablo IV OCR Stats Reader â€” local dev scaffold",
+  "scripts": {
+    "start": "npx http-server -c-1 . -p 8000"
+  },
+  "devDependencies": {}
+}

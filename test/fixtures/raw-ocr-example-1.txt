@@ -1,0 +1,14 @@
+﻿Base Weapon Damage 130
+Weapon Speed 1.10
+Critical Strike Chance 10.1%
+Critical Strike Damage 50.0%
+Overpower Chance 3.0%
+Overpower Damage 123.9%
+Vulnerable Damage 261.2%
+All Damage 79.5%
+Damage with Bleeding 56.0%
+Damage with Burning 56.0%
+Damage with Poisoning 56.0%
+Damage with Corrupting 56.0%
+Damage with Basic 175.0%
+Thorns 0

@@ -1,0 +1,3 @@
+﻿{
+  "basic_precision": { "tier":"basic", "title":"Elixir of Precision", "desc":"Crit Chance +4% and Crit Damage +25%", "mods":{"critChance":4,"critDamage":25,"experienceBonus":5}, "req":10 }
+}

@@ -1,0 +1,4 @@
+﻿{
+  "OFFER_RUNES": { "Cir": { "name":"Cir", "rarity":"Magic", "offering":50, "criteria":"Cast the same non-Channeled Skill 3 times in a row" } },
+  "INVOCATION_RUNES": { "Gar": { "name":"Gar", "rarity":"Magic", "requires":25, "cooldown":1, "effect":"Gain 2.5% Crit Chance for 5s" } }
+}
