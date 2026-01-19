@@ -1,0 +1,61 @@
+﻿:root{
+  --ui-font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --title-font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, serif;
+  --accent-red: #d83b0f;
+  --accent-orange: #ff8b34;
+  --accent-gradient: linear-gradient(90deg,var(--accent-red) 0%, var(--accent-orange) 60%, #c70f0f 100%);
+  --panel-bg: rgba(18,18,18,0.66);
+  --bg-image-url: url('/assets/backgroundcove.jpg');
+}
+
+html,body{height:100%; margin:0;}
+body::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: var(--bg-image-url);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0.75; /* 75% */
+  z-index: -2;
+  pointer-events: none;
+}
+body::after{
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(6,6,6,0.35);
+  z-index: -1;
+  pointer-events: none;
+}
+
+body{ font-family: var(--ui-font); color:#e6eef8; padding:18px; background:#0f0f11; box-sizing:border-box; }
+.container{ max-width:1320px; margin:0 auto; background:var(--panel-bg); border-radius:8px; padding:14px; box-sizing:border-box; }
+.header-logo{ display:inline-block; width:280px; height:72px; background-image:url('/assets/Diablo_IV_Logo.jpg'); background-repeat:no-repeat; background-size:contain; background-position:center; filter: drop-shadow(0 6px 16px rgba(199,15,15,0.25)); }
+.big-title{ font-family: var(--title-font); font-size:2.1rem; font-weight:900; background:var(--accent-gradient); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 1px 0 rgba(0,0,0,0.6); }
+.note{ color:var(--muted, #9aa0a6); margin-top:6px; font-size:0.9em; }
+.row{ display:flex; gap:18px; flex-wrap:wrap; margin-top:12px; }
+.col{ flex:1 1 360px; min-width:0; }
+.panel-box{ padding:10px; background:rgba(15,17,19,0.6); border-radius:6px; }
+.grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:8px; }
+.selectable{ padding:10px; border-radius:6px; background:rgba(12,13,14,0.6); border:1px solid rgba(255,255,255,0.03); }
+.small{ font-size:0.9em; color:var(--muted, #9aa0a6); }
+
+/* utility classes */
+.use-exocet{ font-family: var(--ui-font); }
+.accent{ color: var(--accent-orange); }
+
+/* tables & progress */
+table{ width:100%; border-collapse:collapse; margin-top:6px; font-size:0.92rem; color:#e9f3ff; }
+th,td{ padding:6px; border:1px solid var(--table-border, #1b1e1f); vertical-align:middle; }
+th{ background:rgba(11,12,13,0.7); color:#9fbffd; text-align:left; }
+
+.collapsible{ border-radius:6px; margin-bottom:10px; background:rgba(13,14,16,0.6); border:1px solid rgba(255,255,255,0.03); overflow:hidden; }
+.section-header{ display:flex; gap:10px; align-items:center; padding:8px 10px; cursor:pointer; user-select:none; border-bottom:1px solid rgba(255,255,255,0.03); }
+.chev{ width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; color:var(--muted, #9aa0a6); }
+.section-header .title{ font-size:1.05rem; color:#cfcfd1; font-weight:700; }
+.section-body{ padding:10px; }
+.collapsed .section-body{ display:none; }
+
+@media (max-width:900px){ .row { flex-direction:column; } }

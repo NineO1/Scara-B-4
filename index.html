@@ -1,0 +1,196 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Diablo IV OCR Stats Reader</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Font loader: prefer local fonts in /fonts, fallback to remote -->
+  <script>
+  (async function loadFonts(){
+    const localBildad = './fonts/Bildad.ttf';
+    const localExocet = './fonts/Exocet.ttf';
+    const remoteBildad = 'https://dl.fontget.com/b/i/bildad/Bildad.ttf';
+    const remoteExocet = 'https://raw.githubusercontent.com/rnystrom/Armory-for-Diablo-3/71ff9ffee4a58ed14a3a587200a6ab3faab30522/Profiles%20for%20Diablo%203/Resources/Fonts/Exocet.ttf';
+
+    async function tryLoad(url, family) {
+      try {
+        const f = new FontFace(family, `url(${url})`);
+        await f.load();
+        document.fonts.add(f);
+        console.log('Loaded', family, 'from', url);
+        return true;
+      } catch (e) {
+        console.warn('Failed to load', url, e);
+        return false;
+      }
+    }
+
+    const exocetLoaded = await tryLoad(localExocet, 'ExocetLocal') || await tryLoad(remoteExocet, 'ExocetLocal');
+    const bildadLoaded = await tryLoad(localBildad, 'BildadLocal') || await tryLoad(remoteBildad, 'BildadLocal');
+
+    if (exocetLoaded) document.documentElement.style.setProperty('--ui-font', 'ExocetLocal, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif');
+    if (bildadLoaded) document.documentElement.style.setProperty('--title-font', 'BildadLocal, serif');
+  })();
+  </script>
+</head>
+<body>
+  <div class="container" id="app">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div class="header-logo" aria-hidden="true"></div>
+      <h1 id="mainTitle" class="big-title use-exocet">Diablo IV OCR Stats Reader</h1>
+      <div id="bgControls" style="margin-left:auto;">
+        <label for="bgFile" style="cursor:pointer;"><button id="btnSetBg">Set background</button></label>
+        <input type="file" id="bgFile" accept="image/*" style="display:none" />
+        <div id="bgDropArea" title="Click to drop or choose an image" style="display:inline-block; margin-left:8px;">Drop background here</div>
+        <input type="text" id="bgUrl" placeholder="Paste image URL and press Apply" style="width:320px; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.04); background:rgba(11,12,13,0.6); color:#e6eef8;" />
+        <button id="applyBgUrl">Apply</button>
+        <button id="resetBg">Reset</button>
+      </div>
+    </div>
+
+    <div class="note">Upload or paste the background you sent; the page will set it as background (75% opacity).</div>
+
+    <!-- rest of the page unchanged (keep existing sections/structure) -->
+    <!-- ... existing content follows unchanged ... -->
+
+  </div>
+
+    <div class="note">Upload or paste the background you sent; the page will set it as background (75% opacity).</div>
+
+    <div class="row">
+      <div class="col">
+        <section class="collapsible" id="section-screenshot">
+          <div class="section-header"><div class="chev"></div><div class="title">Screenshot & OCR</div><div style="margin-left:auto;" class="small">Upload screenshots</div></div>
+          <div class="section-body">
+            <input type="file" id="fileInput" accept="image/*" multiple />
+            <div style="margin-top:8px; display:flex; gap:8px;">
+              <button id="resetStatsBtn">Reset collected stats</button>
+              <button id="clearBuffsBtn">Clear active buffs</button>
+            </div>
+            <div id="status" class="small" style="margin-top:8px;">No image loaded.</div>
+            <img id="preview" alt="Screenshot preview" style="margin-top:8px; max-width:100%; border-radius:6px; display:none; border:1px solid #222;" />
+            <h3 style="margin-top:10px;">Raw OCR Text (last upload)</h3>
+            <div id="ocrText" class="ocr-text">No OCR result yet.</div>
+          </div>
+        </section>
+
+        <section class="collapsible" id="section-elixirs">
+          <div class="section-header"><div class="chev"></div><div class="title">Elixirs & Incenses</div><div style="margin-left:auto;" class="small">Manual buffs</div></div>
+          <div class="section-body">
+            <div class="panel-box">
+              <div class="collapsible-sub" id="sub-basic"><div class="sub-header">Basic Elixirs</div><div class="sub-body"><div id="basicElixirGrid" class="grid"></div></div></div>
+              <div class="collapsible-sub" id="sub-advanced"><div class="sub-header">Advanced Elixirs</div><div class="sub-body"><div id="advancedElixirGrid" class="grid"></div></div></div>
+              <div class="collapsible-sub" id="sub-core"><div class="sub-header">Core Stat Incense</div><div class="sub-body"><div id="essenceCoreGrid" class="grid"></div></div></div>
+              <div class="collapsible-sub" id="sub-def"><div class="sub-header">Defensive Incense</div><div class="sub-body"><div id="essenceDefGrid" class="grid"></div></div></div>
+              <div class="collapsible-sub" id="sub-res"><div class="sub-header">Resistance Incense</div><div class="sub-body"><div id="essenceResGrid" class="grid"></div></div></div>
+              <div class="note">Only one Elixir active at once (basic OR advanced). Up to 1 Incense per category.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="collapsible" id="section-runes">
+          <div class="section-header"><div class="chev"></div><div class="title">Rune Duet â€” Test Chamber</div><div style="margin-left:auto;" class="small">Auto-calc</div></div>
+          <div class="section-body">
+            <div class="panel-box">
+              <div style="display:flex; gap:8px;">
+                <div style="flex:1;">
+                  <label class="small">Top rune (grants Offering)</label>
+                  <select id="selectOfferingRune"></select>
+                  <div id="offeringAction" class="small" style="margin-top:6px;">(select a top rune)</div>
+                </div>
+                <div style="flex:1;">
+                  <label class="small">Bottom rune (Invocation)</label>
+                  <select id="selectInvocationRune"></select>
+                </div>
+              </div>
+
+              <div style="margin-top:8px;">
+                <label class="small">Current Offering</label>
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <input id="currentOffering" type="number" value="0" />
+                  <button id="btnTriggerOnce">Simulate 1 trigger</button>
+                  <button id="btnTriggerX">Simulate X triggers</button>
+                  <input id="triggerCount" type="number" min="1" value="5" style="width:72px;" />
+                </div>
+              </div>
+
+              <div style="margin-top:8px;">
+                <label class="small">Invocation requirement & progress</label>
+                <div id="invocationInfo" class="small" style="margin-top:6px;">Select both runes to view requirement.</div>
+                <div style="margin-top:8px;">
+                  <div class="progress"><div class="bar" id="offeringBar"></div></div>
+                  <div style="display:flex; justify-content:space-between; margin-top:6px;">
+                    <div id="requirementText" class="small">â€”</div>
+                    <div id="triggersNeeded" class="small">â€”</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+                <button id="btnInvoke" disabled>Invoke (consume)</button>
+                <button id="btnAutoConsumeToggle">Auto-consume: ON</button>
+                <div class="small" style="margin-left:auto;">Auto-consume will use floor(Offering/Req) activations.</div>
+              </div>
+
+              <h4 style="margin-top:10px;">Log</h4>
+              <div class="log" id="runeLog">Select runes and simulate triggers to populate Offering.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="col">
+        <div style="display:flex; gap:10px; align-items:center;">
+          <div>
+            <label for="classSelect" class="small">Select class</label>
+            <select id="classSelect">
+              <option value="">(none)</option>
+              <option value="barbarian">Barbarian</option>
+              <option value="druid">Druid</option>
+              <option value="necromancer">Necromancer</option>
+              <option value="rogue">Rogue</option>
+              <option value="sorcerer">Sorcerer</option>
+              <option value="spiritborn">Spiritborn</option>
+              <option value="paladin">Paladin</option>
+            </select>
+          </div>
+          <div style="margin-left:auto;">
+            <div id="classBadge" class="classBadge">No class selected</div>
+            <label style="margin-left:8px;" class="small"><input type="checkbox" id="filterRelevant" /> Filter relevant stats</label>
+          </div>
+        </div>
+
+        <section class="collapsible" id="section-detected">
+          <div class="section-header"><div class="chev"></div><div class="title">Combined Detected Stats</div><div style="margin-left:auto;" class="small">OCR + manual buffs</div></div>
+          <div class="section-body">
+            <div id="detectedStats">No stats yet. Upload screenshots to begin.</div>
+          </div>
+        </section>
+
+        <section class="collapsible" id="section-summary">
+          <div class="section-header"><div class="chev"></div><div class="title">Key Stats Summary</div><div style="margin-left:auto;" class="small">Overview</div></div>
+          <div class="section-body">
+            <div class="summary" id="statsSummary">No stats yet.</div>
+            <div class="note">Selections persist until changed or cleared.</div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+
+  <button id="debugToggle">Debug</button>
+  <div id="debugConsole" aria-hidden="true">
+    <header><strong>Debug Console</strong> <span id="debugClose" style="cursor:pointer">[close]</span></header>
+    <pre id="debugLog"></pre>
+  </div>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/ui.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/runes.js"></script>
+  <script src="js/buffs.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
